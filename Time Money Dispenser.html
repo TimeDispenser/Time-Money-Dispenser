@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Money Dispenser</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .container {
+            position: relative;
+            width: 300px;
+            height: 400px;
+            background-image: url('water-dispenser.jpg'); /* Replace with the path to your image */
+            background-size: cover;
+            background-position: center;
+        }
+        .clock {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 150px;
+            border: 2px solid black;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .clock-face {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .number {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+        .hand {
+            position: absolute;
+            width: 50%;
+            height: 2px;
+            background: black;
+            top: 50%;
+            transform-origin: 100%;
+            transform: rotate(90deg);
+        }
+        .hand.second-hand {
+            background: red;
+            height: 1px;
+        }
+        .values {
+            margin-top: 20px;
+            text-align: center;
+        }
+        footer {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Time Money Dispenser</h1>
+    <div class="container">
+        <div class="clock" id="analogClock">
+            <div class="clock-face">
+                <div class="hand hour-hand" id="hourHand"></div>
+                <div class="hand minute-hand" id="minuteHand"></div>
+                <div class="hand second-hand" id="secondHand"></div>
+                <div class="number" style="top: 10%; left: 50%; transform: translate(-50%, -50%);">12</div>
+                <div class="number" style="top: 50%; left: 90%; transform: translate(-50%, -50%);">3</div>
+                <div class="number" style="top: 90%; left: 50%; transform: translate(-50%, -50%);">6</div>
+                <div class="number" style="top: 50%; left: 10%; transform: translate(-50%, -50%);">9</div>
+            </div>
+        </div>
+    </div>
+    <div class="values">
+        <p id="totalHours">Total hours: 0</p>
+        <p id="totalMinutes">Total minutes: 0</p>
+        <p id="totalSeconds">Total seconds: 0</p>
+        <p id="totalValue">Total Value Available: 0 EGP</p>
+    </div>
+    <footer>
+        <p>BY Michael Edward</p>
+    </footer>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const secondHand = document.getElementById('secondHand');
+            const minuteHand = document.getElementById('minuteHand');
+            const hourHand = document.getElementById('hourHand');
+            
+            const seconds = now.getSeconds();
+            const minutes = now.getMinutes();
+            const hours = now.getHours();
+
+            const secondDegree = ((seconds / 60) * 360) + 90;
+            const minuteDegree = ((minutes / 60) * 360) + ((seconds / 60) * 6) + 90;
+            const hourDegree = ((hours / 12) * 360) + ((minutes / 60) * 30) + 90;
+
+            secondHand.style.transform = `rotate(${secondDegree}deg)`;
+            minuteHand.style.transform = `rotate(${minuteDegree}deg)`;
+            hourHand.style.transform = `rotate(${hourDegree}deg)`;
+        }
+
+        function updateValues() {
+            const now = new Date();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            const totalMilliseconds = now - startOfMonth;
+            const totalSeconds = Math.floor(totalMilliseconds / 1000);
+            const totalMinutes = Math.floor(totalSeconds / 60);
+            const totalHours = Math.floor(totalMinutes / 60);
+
+            document.getElementById('totalHours').innerText = `Total hours: ${totalHours}`;
+            document.getElementById('totalMinutes').innerText = `Total minutes: ${totalMinutes}`;
+            document.getElementById('totalSeconds').innerText = `Total seconds: ${totalSeconds}`;
+            document.getElementById('totalValue').innerText = `Total Value Available: ${(totalSeconds * 0.0036).toFixed(2)} EGP`;
+        }
+
+        function update() {
+            updateClock();
+            updateValues();
+        }
+
+        setInterval(update, 1000); // Update every second
+        update(); // Initial update on page load
+    </script>
+</body>
+</html>
